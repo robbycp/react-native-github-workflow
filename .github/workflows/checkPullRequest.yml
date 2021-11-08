@@ -63,7 +63,7 @@ jobs:
 
   checkPullRequestDev:
     name: Check Pull Request Dev
-    needs: ['getOrCreatePullRequestRelease']
+    needs: ['getOrCreatePullRequest']
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -83,7 +83,7 @@ jobs:
 
   checkPullRequestRelease:
     name: Check Pull Request Release
-    needs: ['getOrCreatePullRequestRelease']
+    needs: ['getOrCreatePullRequest']
     runs-on: ubuntu-latest
     steps:
       - name: Check pull request release label
