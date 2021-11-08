@@ -33,7 +33,7 @@ jobs:
               pulls: true,
               labels: 'release'
             }
-            console.log('pullRequestReleases', pullRequestReleases)
+            console.log('variableList', variableList)
             const pullRequestReleases = await github.rest.issues.list(variableList)
             console.log('pullRequestReleases', pullRequestReleases)
             return pullRequestReleases
