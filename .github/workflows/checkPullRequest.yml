@@ -28,7 +28,7 @@ jobs:
             console.log('repo release details', context)
             const variableList = {
               owner: context.actor,
-              repo: context.repo,
+              repo: context.repo.repo,
               state: 'open',
               pulls: true,
               labels: 'release'
