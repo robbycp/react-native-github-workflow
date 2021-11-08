@@ -15,6 +15,7 @@ jobs:
         uses: actions/github-script@v5
         with:
           script: |
+            console.log('repo dev details', context)
             console.log('repo dev details', context.repo)
 
             return github.rest.pulls.get({
@@ -28,6 +29,7 @@ jobs:
         uses: actions/github-script@v5
         with:
           script: |
+            console.log('repo release details', context)
             console.log('repo release details', context.repo)
             const pullRequestReleases = github.rest.issues.list({
               owner: context.repo.owner,
