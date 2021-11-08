@@ -16,13 +16,9 @@ jobs:
         with:
           script: |
             console.log('repo dev details', context)
-            console.log('repo dev details', context.repo)
-
-            return github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.repo.pull_number,
-            })
+            return {
+              ...context.payload.pull_request,
+            }
 
       - name: Get pull request release details
         id: getPullRequestRelease
@@ -30,10 +26,9 @@ jobs:
         with:
           script: |
             console.log('repo release details', context)
-            console.log('repo release details', context.repo)
             const pullRequestReleases = github.rest.issues.list({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
+              owner: context.actor,
+              repo: context.repo,
               state: 'open',
               pulls: true,
               labels: 'release'
@@ -51,6 +46,7 @@ jobs:
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
           branch: staging
+          base: main
           delete-branch: true
           title: '[Release] 1.1.0'
           body: |
@@ -85,7 +81,7 @@ jobs:
             console.log('steps.getPullRequestDev', steps.getPullRequestDev)
             const prefix = steps.getPullRequestDev.outputs.title.split('-')[0]
             if (!['fix', 'modify', 'feature', 'breaking'].includes(prefix)) {
-              exit 1
+              core.setFailed('Prefix title should be fix | modify | feature | breaking')
             }
 
   checkPullRequestRelease:
@@ -100,5 +96,5 @@ jobs:
           script: |
             console.log('steps.getPullRequestRelease', steps.getPullRequestRelease)
             if (steps.getPullRequestRelease.labels.includes('lockDeploys')) {
-              exit 1
+              core.setFailed('Pull Request release has label lockDeploys')
             }
