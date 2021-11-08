@@ -30,11 +30,10 @@ jobs:
               owner: context.actor,
               repo: context.repo.repo,
               state: 'open',
-              pulls: true,
-              labels: 'release'
+              base: 'main',
             }
             console.log('variableList', variableList)
-            const pullRequestReleases = await github.rest.issues.list(variableList)
+            const pullRequestReleases = await github.rest.pulls.list(variableList)
             console.log('pullRequestReleases', pullRequestReleases)
             return pullRequestReleases
 
