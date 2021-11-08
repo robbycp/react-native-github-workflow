@@ -35,7 +35,7 @@ jobs:
             console.log('variableList', variableList)
             const pullRequestReleases = await github.rest.pulls.list(variableList)
             console.log('pullRequestReleases', pullRequestReleases)
-            return pullRequestReleases
+            return pullRequestReleases.data
 
       - name: Create pull request release
         if: ${{ steps.getPullRequestRelease.outputs[0] != 0 }}
@@ -51,12 +51,7 @@ jobs:
           delete-branch: true
           title: '[Release] 1.1.0'
           body: |
-            ## Fix:
-            ## Feature:
-            ## Modify:
-            ## Breaking:
-
-            [1]: https://github.com/peter-evans/create-pull-request
+            ## List Pull Request
           labels: |
             release
           team-reviewers: |
