@@ -8,3 +8,4 @@ Playground github workflow applied for react native boilerplate repository
   - has label QAPassed
 - Check if pull request release
   - doesn't have label lockDeploys
+Addnotes1
