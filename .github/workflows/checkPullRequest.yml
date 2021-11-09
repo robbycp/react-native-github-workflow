@@ -37,6 +37,7 @@ jobs:
             console.log('pullRequestReleases', pullRequestReleases)
             return pullRequestReleases.data
 
+      - uses: actions/checkout@v2
       - name: Create pull request release
         if: ${{ steps.getPullRequestRelease.outputs[0] == null }}
         uses: peter-evans/create-pull-request@v3
@@ -64,8 +65,6 @@ jobs:
     needs: ['getOrCreatePullRequest']
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      
       - name: Check pull request dev label
         if: ${{ !contains(fromJSON('["QAPassed"]'), steps.getPullRequestDev.outputs.pr_labels) }}
         run: exit 1
