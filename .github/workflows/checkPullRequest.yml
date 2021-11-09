@@ -38,6 +38,10 @@ jobs:
             return pullRequestReleases.data
 
       - uses: actions/checkout@v2
+      - name: Set username
+        run: |
+          git config user.name 'Robby Putra'
+          git config user.email 'robbycp@users.noreply.github.com'
       - name: Create pull request release
         if: ${{ steps.getPullRequestRelease.outputs[0] == null }}
         uses: peter-evans/create-pull-request@v3
