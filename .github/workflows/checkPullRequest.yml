@@ -43,7 +43,7 @@ jobs:
           git config user.name 'Robby Putra'
           git config user.email 'robbycp@users.noreply.github.com'
       - name: Create pull request release
-        if: ${{ steps.getPullRequestRelease.outputs[0] != 0 }}
+        if: ${{ steps.getPullRequestRelease.outputs[0] == null }}
         uses: actions/github-script@v5
         with:
           script: |
