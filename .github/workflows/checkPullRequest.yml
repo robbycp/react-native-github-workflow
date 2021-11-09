@@ -54,7 +54,6 @@ jobs:
               head: 'staging',
               base: 'main',
               title: `Release ${today}`,
-              draft: true,
               body: `
                 ## Fix:
                 ## Feature:
