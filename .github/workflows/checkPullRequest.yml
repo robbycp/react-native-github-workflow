@@ -43,26 +43,26 @@ jobs:
           git config user.name 'Robby Putra'
           git config user.email 'robbycp@users.noreply.github.com'
       - name: Create pull request release
-        if: ${{ steps.getPullRequestRelease.outputs[0] == null }}
-        uses: peter-evans/create-pull-request@v3
+        if: ${{ steps.getPullRequestRelease.outputs[0] != 0 }}
+        uses: actions/github-script@v5
         with:
-          token: ${{ secrets.PAT }}
-          commit-message: Create pull request
-          committer: GitHub <noreply@github.com>
-          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          signoff: false
-          branch: staging
-          base: main
-          delete-branch: true
-          title: '[Release] 2021-11-08'
-          body: |
-            ## List Pull Request
-          labels: |
-            release
-          team-reviewers: |
-            owners
-            maintainers
-          draft: true
+          script: |
+            const today = new Date().toDateString()
+            const createdPR = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: 'staging',
+              base: 'main',
+              title: `Release ${today}`,
+              draft: true,
+              body: `
+                ## Fix:
+                ## Feature:
+                ## Modify:
+                ## Breaking:
+              `
+            })
+            console.log('createdPR', createdPR)
 
   checkPullRequestDev:
     name: Check Pull Request Dev
