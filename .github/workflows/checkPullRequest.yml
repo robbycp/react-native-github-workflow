@@ -53,12 +53,12 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               branch: 'main',
-            }).commit.sha
+            })
             const stagingRepoLastCommit = await github.rest.repos.getBranch({
               owner: context.repo.owner,
               repo: context.repo.repo,
               branch: 'staging',
-            }).commit.sha
+            })
             console.log('mainRepoLastCommit', mainRepoLastCommit)
             console.log('stagingRepoLastCommit', stagingRepoLastCommit)
             if (mainRepoLastCommit !== stagingRepoLastCommit) {
