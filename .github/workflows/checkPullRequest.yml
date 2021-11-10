@@ -96,8 +96,8 @@ jobs:
         uses: actions/github-script@v5
         with:
           script: |
-            console.log('steps.getPullRequestDev', steps.getPullRequestDev)
-            const prefix = steps.getPullRequestDev.outputs.title.split('-')[0]
+            console.log('needs.getPullRequestDev', needs.getPullRequestDev)
+            const prefix = needs.getPullRequestDev.outputs.title.split('-')[0]
             if (!['fix', 'modify', 'feature', 'breaking'].includes(prefix)) {
               core.setFailed('Prefix title should be fix | modify | feature | breaking')
             }
@@ -111,7 +111,7 @@ jobs:
         uses: actions/github-script@v5
         with:
           script: |
-            console.log('steps.getPullRequestRelease', steps.getPullRequestRelease)
-            if (steps.getPullRequestRelease.labels.includes('lockDeploys')) {
+            console.log('needs.getPullRequestRelease', needs.getPullRequestRelease)
+            if (needs.getPullRequestRelease.labels.includes('lockDeploys')) {
               core.setFailed('Pull Request release has label lockDeploys')
             }
