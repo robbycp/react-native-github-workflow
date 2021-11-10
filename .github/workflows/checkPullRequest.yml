@@ -49,19 +49,19 @@ jobs:
         with:
           script: |
             // Check if there is no changes between branch staging and main
-            const mainRepoLastCommit = await github.rest.repos.getBranch({
+            const repoMainData = await github.rest.repos.getBranch({
               owner: context.repo.owner,
               repo: context.repo.repo,
               branch: 'main',
             })
-            const stagingRepoLastCommit = await github.rest.repos.getBranch({
+            const repoStagingData = await github.rest.repos.getBranch({
               owner: context.repo.owner,
               repo: context.repo.repo,
               branch: 'staging',
             })
-            console.log('mainRepoLastCommit', mainRepoLastCommit)
-            console.log('stagingRepoLastCommit', stagingRepoLastCommit)
-            if (mainRepoLastCommit !== stagingRepoLastCommit) {
+            console.log('repoMainData', repoMainData)
+            console.log('repoStagingData', repoStagingData)
+            if (repoMainData.data.commit.sha !== repoStagingData.data.commit.sha) {
               return {
                 isMainAndStagingDifferent: true
               }
@@ -112,6 +112,6 @@ jobs:
         with:
           script: |
             console.log('steps.getPullRequestRelease', steps.getPullRequestRelease)
-            if (steps.getPullRequestRelease?.labels.includes('lockDeploys')) {
+            if (steps.getPullRequestRelease.labels.includes('lockDeploys')) {
               core.setFailed('Pull Request release has label lockDeploys')
             }
