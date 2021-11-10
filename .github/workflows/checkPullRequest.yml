@@ -111,10 +111,12 @@ jobs:
     steps:
       - name: Check pull request release label
         uses: actions/github-script@v5
+        env:
+          NEEDS: ${{ needs }}
         with:
           script: |
             console.log('check PR release context', context)
-            console.log('${{ needs }}')
+            console.log('NEEDS', process.env.NEEDS)
             # console.log('needs.getPullRequestRelease', needs.getPullRequestRelease)
             # if (needs.getPullRequestRelease.labels.includes('lockDeploys')) {
             #   core.setFailed('Pull Request release has label lockDeploys')
