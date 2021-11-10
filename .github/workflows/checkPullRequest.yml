@@ -61,7 +61,7 @@ jobs:
             })
             console.log('repoMainData', repoMainData)
             console.log('repoStagingData', repoStagingData)
-            if (repoMainData.data.commit.sha !== repoStagingData.data.commit.sha) {
+            if (repoMainData.data.commit.sha === repoStagingData.data.commit.sha) {
               return {
                 isMainAndStagingDifferent: true
               }
