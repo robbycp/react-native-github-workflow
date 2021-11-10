@@ -43,10 +43,30 @@ jobs:
           git config user.name 'Robby Putra'
           git config user.email 'robbycp@users.noreply.github.com'
       - name: Create pull request release
+        id: createPullRequestRelease
         if: ${{ steps.getPullRequestRelease.outputs[0] == null }}
         uses: actions/github-script@v5
         with:
           script: |
+            // Check if there is no changes between branch staging and main
+            const mainRepoLastCommit = await github.rest.repos.getBranch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              branch: 'main',
+            }).commit.sha
+            const stagingRepoLastCommit = await github.rest.repos.getBranch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              branch: 'staging',
+            }).commit.sha
+            console.log('mainRepoLastCommit', mainRepoLastCommit)
+            console.log('stagingRepoLastCommit', stagingRepoLastCommit)
+            if (mainRepoLastCommit !== stagingRepoLastCommit) {
+              return {
+                isMainAndStagingDifferent: true
+              }
+            }
+
             const today = new Date().toDateString()
             const createdPR = await github.rest.pulls.create({
               owner: context.repo.owner,
@@ -88,11 +108,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check pull request release label
-        if: ${{ !contains(fromJSON('["fixStaging"]'), steps.getPullRequestRelease.outputs.pr_labels) }}
         uses: actions/github-script@v5
         with:
           script: |
             console.log('steps.getPullRequestRelease', steps.getPullRequestRelease)
-            if (steps.getPullRequestRelease.labels.includes('lockDeploys')) {
+            if (steps.getPullRequestRelease?.labels.includes('lockDeploys')) {
               core.setFailed('Pull Request release has label lockDeploys')
             }
