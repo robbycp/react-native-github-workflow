@@ -10,15 +10,24 @@ jobs:
     name: Check Pull Reqest Dev and Release, create if not exist
     runs-on: ubuntu-latest
     steps:
-      - name: Get pull request dev details
-        id: getPullRequestDev
+      - name: Check pull request dev details
         uses: actions/github-script@v5
         with:
           script: |
             console.log('repo dev details', context)
-            return {
-              ...context.payload.pull_request,
+            const message = ''
+            // Check title
+            const title = context.payload.pull_request.title
+            const prefix = title.split('-')[0]
+            if (!['fix', 'modify', 'feature', 'breaking'].includes(prefix)) {
+              message.concat('Prefix must be fix|modify|feature|breaking')
             }
+            // Check label
+            const labels = context.payload.pull_request.labels
+            if (!labels.includes('QAPassed')) {
+              message.concat(', must have label QA passed')
+            }
+            core.setFailed(message)
 
       - name: Get pull request release details
         id: getPullRequestRelease
@@ -35,7 +44,9 @@ jobs:
             console.log('variableList', variableList)
             const pullRequestReleases = await github.rest.pulls.list(variableList)
             console.log('pullRequestReleases', pullRequestReleases)
-            return pullRequestReleases.data
+            if (pullRequestReleases.length > 0 && pullRequestReleases[0].labels.includes('lockDeploys')) {
+              core.setFailed('Pull Request release has label lockDeploys')
+            }
 
       - uses: actions/checkout@v2
       - name: Set username
@@ -84,32 +95,3 @@ jobs:
             console.log('createdPR', createdPR)
             return createdPR
 
-      - name: Check pull request dev title
-        uses: actions/github-script@v5
-        env:
-          PULL_REQUEST_DEV: ${{ toJson(steps.getPullRequestDev.outputs) }}
-        with:
-          script: |
-            console.log('process.env.PULL_REQUEST_DEV', process.env.PULL_REQUEST_DEV)
-            const pullRequestDev = JSON.parse(process.env.PULL_REQUEST_DEV.result)
-            console.log('pullRequestDev', pullRequestDev)
-            // Check title
-            // Check label
-            // console.log('needs.getPullRequestDev', needs.getPullRequestDev)
-            // const prefix = needs.getPullRequestDev.outputs.title.split('-')[0]
-            // if (!['fix', 'modify', 'feature', 'breaking'].includes(prefix)) {
-            //   core.setFailed('Prefix title should be fix | modify | feature | breaking')
-            // }
-      - name: Check pull request release label
-        uses: actions/github-script@v5
-        env:
-          PULL_REQUEST_RELEASE: ${{ toJson(steps.getPullRequestRelease.outputs) }}
-        with:
-          script: |
-            console.log('process.env.PULL_REQUEST_RELEASE', process.env.PULL_REQUEST_RELEASE)
-            const pullRequestRelease = JSON.parse(process.env.PULL_REQUEST_RELEASE.result)
-            console.log('pullRequestRelease', pullRequestRelease)
-            // console.log('needs.getPullRequestRelease', needs.getPullRequestRelease)
-            // if (needs.getPullRequestRelease.labels.includes('lockDeploys')) {
-            //   core.setFailed('Pull Request release has label lockDeploys')
-            // }
