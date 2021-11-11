@@ -98,10 +98,12 @@ jobs:
 
       - name: Check pull request dev title
         uses: actions/github-script@v5
+        env:
+          NEEDS: ${{ toJson(needs) }}
         with:
           script: |
             console.log('check PR dev context', context)
-            console.log('${{ needs }}')
+            console.log('NEEDS', process.env.NEEDS)
             # console.log('needs.getPullRequestDev', needs.getPullRequestDev)
             # const prefix = needs.getPullRequestDev.outputs.title.split('-')[0]
             # if (!['fix', 'modify', 'feature', 'breaking'].includes(prefix)) {
@@ -116,7 +118,7 @@ jobs:
       - name: Check pull request release label
         uses: actions/github-script@v5
         env:
-          NEEDS: '${{needs}}'
+          NEEDS: ${{ toJson(needs) }}
         with:
           script: |
             console.log('check PR release context', context)
