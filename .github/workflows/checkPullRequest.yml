@@ -6,12 +6,9 @@ on:
     branches-ignore: [main]
 
 jobs:
-  getOrCreatePullRequest:
-    name: Get Pull Reqest Dev and Release, create if not exist
+  checkPullRequest:
+    name: Check Pull Reqest Dev and Release, create if not exist
     runs-on: ubuntu-latest
-    outputs:
-      pullRequestDev: ${{ steps.getPullRequestDev.outputs.pullRequestDev }}
-      pullRequestRelease: ${{ steps.getPullRequestRelease.outputs.pullRequestRelease }}
     steps:
       - name: Get pull request dev details
         id: getPullRequestDev
@@ -87,43 +84,23 @@ jobs:
             console.log('createdPR', createdPR)
             return createdPR
 
-  checkPullRequestDev:
-    name: Check Pull Request Dev
-    needs: ['getOrCreatePullRequest']
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check pull request dev label
-        if: ${{ !contains(fromJSON('["QAPassed"]'), steps.getPullRequestDev.outputs.pr_labels) }}
-        run: exit 1
-
       - name: Check pull request dev title
         uses: actions/github-script@v5
-        env:
-          NEEDS: ${{ toJson(needs) }}
         with:
           script: |
-            console.log('check PR dev context', context)
-            console.log('NEEDS', process.env.NEEDS)
+            console.log('steps', steps)
+            // Check title
+            // Check label
             // console.log('needs.getPullRequestDev', needs.getPullRequestDev)
             // const prefix = needs.getPullRequestDev.outputs.title.split('-')[0]
             // if (!['fix', 'modify', 'feature', 'breaking'].includes(prefix)) {
             //   core.setFailed('Prefix title should be fix | modify | feature | breaking')
             // }
-
-  checkPullRequestRelease:
-    name: Check Pull Request Release
-    needs: ['getOrCreatePullRequest']
-    runs-on: ubuntu-latest
-    steps:
       - name: Check pull request release label
         uses: actions/github-script@v5
-        env:
-          NEEDS: ${{ needs.getOrCreatePullRequest.outputs.pullRequestRelease }}
-          NEEDS2: ${{ toJson(needs.getOrCreatePullRequest.outputs.pullRequestRelease) }}
         with:
           script: |
-            console.log('check PR release context', context)
-            console.log('env', process.env)
+            console.log('steps', steps)
             // console.log('needs.getPullRequestRelease', needs.getPullRequestRelease)
             // if (needs.getPullRequestRelease.labels.includes('lockDeploys')) {
             //   core.setFailed('Pull Request release has label lockDeploys')
