@@ -52,9 +52,9 @@ jobs:
             return pullRequestReleases
 
       - name: Create pull request release
-        env:
-          SKIP: ${{ fromJson(steps.getPullRequestRelease.outputs.skipCreatePullRequest) }}
         uses: actions/github-script@v5
+        env:
+          SKIP: ${{ steps.getPullRequestRelease.outputs }}
         with:
           script: |
             console.log('skip', process.env.SKIP)
