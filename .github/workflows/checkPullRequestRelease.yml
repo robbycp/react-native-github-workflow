@@ -58,19 +58,22 @@ jobs:
         with:
           script: |
             console.log('skip', process.env.SKIP)
-            // const today = new Date().toDateString()
-            // const createdPR = await github.rest.pulls.create({
-            //   owner: context.repo.owner,
-            //   repo: context.repo.repo,
-            //   head: 'staging',
-            //   base: 'main',
-            //   title: `Release ${today}`,
-            //   body: `
-            //     ## Fix:
-            //     ## Feature:
-            //     ## Modify:
-            //     ## Breaking:
-            //   `
-            // })
-            // console.log('createdPR', createdPR)
-            // return createdPR
+            const skipCreate = JSON.parse(process.env.SKIP)
+            if (!skipCreate) {
+              const today = new Date().toDateString()
+              const createdPR = await github.rest.pulls.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                head: 'staging',
+                base: 'main',
+                title: `Release ${today}`,
+                body: `
+                  ## Fix:
+                  ## Feature:
+                  ## Modify:
+                  ## Breaking:
+                `
+              })
+              console.log('createdPR', createdPR)
+              return createdPR
+            }
