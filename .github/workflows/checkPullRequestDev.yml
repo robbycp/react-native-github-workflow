@@ -1,0 +1,32 @@
+name: Check Pull Request Source
+
+on:
+  pull_request:
+    types: [assigned, opened, synchronize, reopened, labeled]
+    branches-ignore: [main]
+
+jobs:
+  check:
+    name: Check Pull Reqest Source
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check title and label
+        uses: actions/github-script@v5
+        with:
+          script: |
+            console.log('repo source details', context)
+            const message = ''
+            // Check title
+            const title = context.payload.pull_request.title
+            const prefix = title.split('-')[0]
+            if (!['fix', 'modify', 'feature', 'breaking'].includes(prefix)) {
+              message.concat('Prefix must be fix|modify|feature|breaking')
+            }
+            // Check label if base branch is staging
+            console.log('head', context.payload.pull_request.head)
+            console.log('base', context.payload.pull_request.base)
+            const labels = context.payload.pull_request.labels
+            if (!labels.includes('QAPassed')) {
+              message.concat(', must have label QA passed')
+            }
+            core.setFailed(message)

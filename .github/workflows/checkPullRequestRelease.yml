@@ -1,0 +1,71 @@
+name: Check Pull Request Base
+
+on:
+  pull_request:
+    types: [assigned, opened, synchronize, reopened, labeled]
+    branches-ignore: [main, staging]
+
+jobs:
+  check:
+    name: Check Pull Reqest Base or create
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check existance and label
+        id: getPullRequestRelease
+        uses: actions/github-script@v5
+        with:
+          script: |
+            // Check if there is no changes between branch staging and main
+            const repoMainData = await github.rest.repos.getBranch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              branch: 'main',
+            })
+            const repoStagingData = await github.rest.repos.getBranch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              branch: 'staging',
+            })
+            console.log('repoMainData', repoMainData)
+            console.log('repoStagingData', repoStagingData)
+            if (repoMainData.data.commit.sha === repoStagingData.data.commit.sha) {
+              exit 0
+            }
+
+            // Check if pull request release exist
+            console.log('repo release details', context)
+            const variableList = {
+              owner: context.actor,
+              repo: context.repo.repo,
+              state: 'open',
+              base: 'main',
+            }
+            console.log('variableList', variableList)
+            const pullRequestReleases = await github.rest.pulls.list(variableList)
+            console.log('pullRequestReleases', pullRequestReleases)
+            if (pullRequestReleases.length > 0 && pullRequestReleases[0].labels.includes('lockDeploys')) {
+              core.setFailed('Pull Request release has label lockDeploys')
+            }
+            return pullRequestReleases
+
+      - name: Create pull request release
+        id: createPullRequestRelease
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const today = new Date().toDateString()
+            const createdPR = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: 'staging',
+              base: 'main',
+              title: `Release ${today}`,
+              body: `
+                ## Fix:
+                ## Feature:
+                ## Modify:
+                ## Breaking:
+              `
+            })
+            console.log('createdPR', createdPR)
+            return createdPR
