@@ -2,7 +2,7 @@ name: Check Pull Request Source
 
 on:
   pull_request:
-    types: [edited, labeled, opened, reopened, synchronize]
+    types: [edited, labeled, opened, reopened, synchronize, unlabeled]
     branches:
       - main
       - staging
@@ -21,6 +21,7 @@ jobs:
             // Check title
             const title = context.payload.pull_request.title
             const prefix = title.split('-')[0]
+            console.log('prefix', prefix)
             if (!['fix', 'modify', 'feature', 'breaking'].includes(prefix)) {
               errorMessage.concat('Prefix must be fix|modify|feature|breaking')
             }
@@ -28,6 +29,7 @@ jobs:
             console.log('head', context.payload.pull_request.head)
             console.log('base', context.payload.pull_request.base)
             const labels = context.payload.pull_request.labels
+            console.log('labels', labels)
             if (!labels.includes('QAPassed')) {
               errorMessage.concat(', must have label QA passed')
             }
