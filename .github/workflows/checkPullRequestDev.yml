@@ -17,13 +17,13 @@ jobs:
         with:
           script: |
             console.log('repo source details', context)
-            const errorMessage = ''
+            let errorMessage = ''
             // Check title
             const title = context.payload.pull_request.title
             const prefix = title.split('-')[0]
             console.log('prefix', prefix)
             if (!['fix', 'modify', 'feature', 'breaking'].includes(prefix)) {
-              errorMessage.concat('Prefix must be fix|modify|feature|breaking')
+              errorMessage += 'Prefix must be fix|modify|feature|breaking, '
             }
             // Check label if base branch is staging
             console.log('head', context.payload.pull_request.head)
@@ -31,7 +31,7 @@ jobs:
             const labels = context.payload.pull_request.labels
             console.log('labels', labels)
             if (!labels.includes('QAPassed')) {
-              errorMessage.concat(', must have label QA passed')
+              errorMessage += 'must have label QA passed'
             }
             console.log('errorMessage', errorMessage)
             if (errorMessage) {
