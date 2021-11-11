@@ -118,7 +118,7 @@ jobs:
       - name: Check pull request release label
         uses: actions/github-script@v5
         env:
-          NEEDS: ${{ toJson(needs) }}
+          NEEDS: ${{ toJson(needs.getOrCreatePullRequest.getPullRequestRelease.outputs.pullRequestRelease) }}
         with:
           script: |
             console.log('check PR release context', context)
