@@ -30,7 +30,9 @@ jobs:
             console.log('repoMainData', repoMainData)
             console.log('repoStagingData', repoStagingData)
             if (repoMainData.data.commit.sha === repoStagingData.data.commit.sha) {
-              exit 0
+              return {
+                skipCreatePullRequest: false,
+              }
             }
 
             // Check if pull request release exist
@@ -50,7 +52,7 @@ jobs:
             return pullRequestReleases
 
       - name: Create pull request release
-        id: createPullRequestRelease
+        if: ${{ steps.getPullRequestRelease.outputs.skipCreatePullRequest }}
         uses: actions/github-script@v5
         with:
           script: |
