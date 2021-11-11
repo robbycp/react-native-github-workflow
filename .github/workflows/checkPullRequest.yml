@@ -91,6 +91,8 @@ jobs:
         with:
           script: |
             console.log('process.env.PULL_REQUEST_DEV', process.env.PULL_REQUEST_DEV)
+            const pullRequestDev = JSON.parse(process.env.PULL_REQUEST_DEV.result)
+            console.log('pullRequestDev', pullRequestDev)
             // Check title
             // Check label
             // console.log('needs.getPullRequestDev', needs.getPullRequestDev)
@@ -105,6 +107,8 @@ jobs:
         with:
           script: |
             console.log('process.env.PULL_REQUEST_RELEASE', process.env.PULL_REQUEST_RELEASE)
+            const pullRequestRelease = JSON.parse(process.env.PULL_REQUEST_RELEASE.result)
+            console.log('pullRequestRelease', pullRequestRelease)
             // console.log('needs.getPullRequestRelease', needs.getPullRequestRelease)
             // if (needs.getPullRequestRelease.labels.includes('lockDeploys')) {
             //   core.setFailed('Pull Request release has label lockDeploys')
