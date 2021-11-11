@@ -119,10 +119,12 @@ jobs:
         uses: actions/github-script@v5
         env:
           NEEDS: ${{ needs.getOrCreatePullRequest.outputs.pullRequestRelease }}
+          NEEDS1: ${{ fromJson(needs.getOrCreatePullRequest.outputs.pullRequestRelease) }}
+          NEEDS2: ${{ toJson(needs.getOrCreatePullRequest.outputs.pullRequestRelease) }}
         with:
           script: |
             console.log('check PR release context', context)
-            console.log('NEEDS', process.env.NEEDS)
+            console.log('env', process.env)
             // console.log('needs.getPullRequestRelease', needs.getPullRequestRelease)
             // if (needs.getPullRequestRelease.labels.includes('lockDeploys')) {
             //   core.setFailed('Pull Request release has label lockDeploys')
