@@ -104,11 +104,11 @@ jobs:
           script: |
             console.log('check PR dev context', context)
             console.log('NEEDS', process.env.NEEDS)
-            # console.log('needs.getPullRequestDev', needs.getPullRequestDev)
-            # const prefix = needs.getPullRequestDev.outputs.title.split('-')[0]
-            # if (!['fix', 'modify', 'feature', 'breaking'].includes(prefix)) {
-            #   core.setFailed('Prefix title should be fix | modify | feature | breaking')
-            # }
+            // console.log('needs.getPullRequestDev', needs.getPullRequestDev)
+            // const prefix = needs.getPullRequestDev.outputs.title.split('-')[0]
+            // if (!['fix', 'modify', 'feature', 'breaking'].includes(prefix)) {
+            //   core.setFailed('Prefix title should be fix | modify | feature | breaking')
+            // }
 
   checkPullRequestRelease:
     name: Check Pull Request Release
@@ -123,7 +123,7 @@ jobs:
           script: |
             console.log('check PR release context', context)
             console.log('NEEDS', process.env.NEEDS)
-            # console.log('needs.getPullRequestRelease', needs.getPullRequestRelease)
-            # if (needs.getPullRequestRelease.labels.includes('lockDeploys')) {
-            #   core.setFailed('Pull Request release has label lockDeploys')
-            # }
+            // console.log('needs.getPullRequestRelease', needs.getPullRequestRelease)
+            // if (needs.getPullRequestRelease.labels.includes('lockDeploys')) {
+            //   core.setFailed('Pull Request release has label lockDeploys')
+            // }
