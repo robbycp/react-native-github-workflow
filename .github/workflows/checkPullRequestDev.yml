@@ -20,9 +20,10 @@ jobs:
             let errorMessage = ''
             // Check title
             const title = context.payload.pull_request.title
-            const prefix = title.split('-')[0]
+            const prefix = title.split('-')[0].trim()
             console.log('prefix', prefix)
-            if (!['fix', 'modify', 'feature', 'breaking'].includes(prefix)) {
+            const regex = /^[f|F]ix|[f|F]eature|[b|B]reaking|[m|M]odify$/
+            if (!prefix.match(regex)) {
               errorMessage += 'Prefix must be fix|modify|feature|breaking, '
             }
             // Check label if base branch is staging
@@ -30,7 +31,7 @@ jobs:
             console.log('base', context.payload.pull_request.base)
             const labels = context.payload.pull_request.labels
             console.log('labels', labels)
-            if (!labels.includes('QAPassed')) {
+            if (!labels.find((item) => item.name === 'QAPassed')) {
               errorMessage += 'must have label QA passed'
             }
             console.log('errorMessage', errorMessage)
