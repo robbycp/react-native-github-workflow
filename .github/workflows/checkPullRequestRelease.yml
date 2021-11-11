@@ -52,23 +52,25 @@ jobs:
             return pullRequestReleases
 
       - name: Create pull request release
-        if: ${{ steps.getPullRequestRelease.outputs.skipCreatePullRequest }}
+        env:
+          SKIP: ${{ fromJson(steps.getPullRequestRelease.outputs.skipCreatePullRequest) }}
         uses: actions/github-script@v5
         with:
           script: |
-            const today = new Date().toDateString()
-            const createdPR = await github.rest.pulls.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              head: 'staging',
-              base: 'main',
-              title: `Release ${today}`,
-              body: `
-                ## Fix:
-                ## Feature:
-                ## Modify:
-                ## Breaking:
-              `
-            })
-            console.log('createdPR', createdPR)
-            return createdPR
+            console.log('skip', process.env.SKIP)
+            # const today = new Date().toDateString()
+            # const createdPR = await github.rest.pulls.create({
+            #   owner: context.repo.owner,
+            #   repo: context.repo.repo,
+            #   head: 'staging',
+            #   base: 'main',
+            #   title: `Release ${today}`,
+            #   body: `
+            #     ## Fix:
+            #     ## Feature:
+            #     ## Modify:
+            #     ## Breaking:
+            #   `
+            # })
+            # console.log('createdPR', createdPR)
+            # return createdPR
