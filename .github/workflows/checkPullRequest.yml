@@ -99,7 +99,7 @@ jobs:
       - name: Check pull request dev title
         uses: actions/github-script@v5
         env:
-          NEEDS: ${{ needs }}
+          NEEDS: ${{ toJson(needs) }}
         with:
           script: |
             console.log('check PR dev context', context)
@@ -118,7 +118,7 @@ jobs:
       - name: Check pull request release label
         uses: actions/github-script@v5
         env:
-          NEEDS: ${{ needs }}
+          NEEDS: ${{ needs.getOrCreatePullRequest.outputs.pullRequestRelease) }}
         with:
           script: |
             console.log('check PR release context', context)
