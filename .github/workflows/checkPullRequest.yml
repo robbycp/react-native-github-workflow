@@ -86,9 +86,11 @@ jobs:
 
       - name: Check pull request dev title
         uses: actions/github-script@v5
+        env:
+          pullRequestDev: ${{ steps.getPullRequestDev.outputs }}
         with:
           script: |
-            console.log('steps', steps)
+            console.log('process.env.pullRequestDev', process.env.pullRequestDev)
             // Check title
             // Check label
             // console.log('needs.getPullRequestDev', needs.getPullRequestDev)
@@ -98,9 +100,11 @@ jobs:
             // }
       - name: Check pull request release label
         uses: actions/github-script@v5
+        env:
+          pullRequestRelease: ${{ steps.getPullRequestRelease.outputs }}
         with:
           script: |
-            console.log('steps', steps)
+            console.log('process.env.pullRequestRelease', process.env.pullRequestRelease)
             // console.log('needs.getPullRequestRelease', needs.getPullRequestRelease)
             // if (needs.getPullRequestRelease.labels.includes('lockDeploys')) {
             //   core.setFailed('Pull Request release has label lockDeploys')
