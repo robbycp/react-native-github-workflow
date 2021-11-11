@@ -3,7 +3,9 @@ name: Check Pull Request Source
 on:
   pull_request:
     types: [edited, labeled, opened, reopened, synchronize]
-    branches-ignore: [main]
+    branches:
+      - main
+      - staging
 
 jobs:
   check:

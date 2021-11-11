@@ -2,8 +2,9 @@ name: Check Pull Request Base
 
 on:
   pull_request:
-    types: [assigned, opened, synchronize, reopened, labeled]
-    branches-ignore: [main, staging]
+    types: [edited, labeled, opened, reopened, synchronize]
+    branches:
+      - staging
 
 jobs:
   check:
