@@ -9,6 +9,9 @@ jobs:
   getOrCreatePullRequest:
     name: Get Pull Reqest Dev and Release, create if not exist
     runs-on: ubuntu-latest
+    outputs:
+      pullRequestDev: ${{ steps.getPullRequestDev.outputs.pullRequestDev }}
+      pullRequestRelease: ${{ steps.getPullRequestRelease.outputs.pullRequestRelease }}
     steps:
       - name: Get pull request dev details
         id: getPullRequestDev
@@ -63,7 +66,7 @@ jobs:
             console.log('repoStagingData', repoStagingData)
             if (repoMainData.data.commit.sha === repoStagingData.data.commit.sha) {
               return {
-                isMainAndStagingDifferent: true
+                isMainAndStagingSame: true
               }
             }
 
@@ -82,6 +85,7 @@ jobs:
               `
             })
             console.log('createdPR', createdPR)
+            return createdPR
 
   checkPullRequestDev:
     name: Check Pull Request Dev
@@ -112,11 +116,11 @@ jobs:
       - name: Check pull request release label
         uses: actions/github-script@v5
         env:
-          STEPS: '${{steps}}'
+          NEEDS: '${{needs}}'
         with:
           script: |
             console.log('check PR release context', context)
-            console.log('STEPS', process.env.STEPS)
+            console.log('NEEDS', process.env.NEEDS)
             # console.log('needs.getPullRequestRelease', needs.getPullRequestRelease)
             # if (needs.getPullRequestRelease.labels.includes('lockDeploys')) {
             #   core.setFailed('Pull Request release has label lockDeploys')
