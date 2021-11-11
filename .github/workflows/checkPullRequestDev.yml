@@ -31,6 +31,7 @@ jobs:
             if (!labels.includes('QAPassed')) {
               errorMessage.concat(', must have label QA passed')
             }
+            console.log('errorMessage', errorMessage)
             if (errorMessage) {
               core.setFailed(errorMessage)
             }
