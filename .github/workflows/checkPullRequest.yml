@@ -119,7 +119,6 @@ jobs:
         uses: actions/github-script@v5
         env:
           NEEDS: ${{ needs.getOrCreatePullRequest.outputs.pullRequestRelease }}
-          NEEDS1: ${{ fromJson(needs.getOrCreatePullRequest.outputs.pullRequestRelease) }}
           NEEDS2: ${{ toJson(needs.getOrCreatePullRequest.outputs.pullRequestRelease) }}
         with:
           script: |
