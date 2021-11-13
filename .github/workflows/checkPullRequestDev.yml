@@ -48,6 +48,7 @@ jobs:
         uses: actions/github-script@v5
         with:
           script: |
+            console.log('github', github)
             // get list of merged PR
             const pullRequests = await github.rest.pulls.list({
               owner: context.actor,
@@ -69,7 +70,7 @@ jobs:
 
             // Generate and update pull request body
             let body
-            const titles = pullRequestMerged.map((item) => mappedTitle(item.title))
+            const titles = pullRequestsMerged.map((item) => mappedTitle(item.title))
             ['feature', 'fix', 'breaking', 'modify'].forEach((type) => {
               body += `##${type}`
               const titleTypes = titles.filter((title) => title.type === type)
