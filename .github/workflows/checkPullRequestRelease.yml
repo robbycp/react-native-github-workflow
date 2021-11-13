@@ -47,7 +47,7 @@ jobs:
             console.log('variableList', variableList)
             const pullRequestReleases = await github.rest.pulls.list(variableList)
             console.log('pullRequestReleases', pullRequestReleases)
-            if (pullRequestReleases.length > 0 && pullRequestReleases[0].labels.includes('lockDeploys')) {
+            if (pullRequestReleases.data.length > 0 && pullRequestReleases.data[0].labels.includes('lockDeploys')) {
               core.setFailed('Pull Request release has label lockDeploys')
             }
             return {
@@ -60,6 +60,7 @@ jobs:
           SKIP: ${{ toJSON(steps.getPullRequestRelease.outputs.result) }}
         with:
           script: |
+            console.log('skip', process.env.SKIP)
             const skipCreate = JSON.parse(process.env.SKIP).skipCreatePullRequest
             console.log('skip', skipCreate)
             if (!skipCreate) {
