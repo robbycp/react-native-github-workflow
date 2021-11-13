@@ -24,7 +24,7 @@ jobs:
             console.log('prefix', prefix)
             const regex = /^[f|F]ix|[f|F]eature|[b|B]reaking|[m|M]odify|[r|R]elease$/
             if (!prefix.match(regex)) {
-              errorMessage += 'Prefix must be fix|modify|feature|breaking, '
+              errorMessage += 'Prefix must be fix|modify|feature|breaking|release, '
             }
             // Check label if base branch is staging
             console.log('head', context.payload.pull_request.head)
@@ -39,8 +39,12 @@ jobs:
               core.setFailed(errorMessage)
             }
 
-      - name: Update Body Pull Request Release
-        if: ${{ github.event.payload.pull_request.head.name == 'staging' }}
+  updateBody:
+    name: Update Pull Reqest Release
+    if: ${{ github.event.payload.pull_request.head.name == 'staging' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Body
         uses: actions/github-script@v5
         with:
           script: |
