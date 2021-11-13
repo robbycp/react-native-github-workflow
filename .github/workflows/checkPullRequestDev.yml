@@ -41,7 +41,7 @@ jobs:
 
   updateBody:
     name: Update Pull Reqest Release
-    if: ${{ github.event.payload.pull_request.head.ref == 'staging' }}
+    # if: ${{ github.event.payload.pull_request.head.ref == 'staging' }}
     runs-on: ubuntu-latest
     steps:
       - name: Update Body
