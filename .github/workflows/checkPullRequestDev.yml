@@ -41,7 +41,7 @@ jobs:
 
   updateBody:
     name: Update Pull Reqest Release
-    if: ${{ github.ref == 'ref/heads/staging' }}
+    if: github.ref == 'ref/heads/staging'
     runs-on: ubuntu-latest
     steps:
       - name: Update Body
