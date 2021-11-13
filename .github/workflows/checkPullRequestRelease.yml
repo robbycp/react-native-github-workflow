@@ -28,6 +28,7 @@ jobs:
               branch: 'staging',
             })
             console.log('repoMainData', repoMainData)
+            console.log('repoMainData', repoMainData.data.commit.commit)
             console.log('repoStagingData', repoStagingData)
             if (repoMainData.data.commit.sha === repoStagingData.data.commit.sha) {
               return {
@@ -49,7 +50,9 @@ jobs:
             if (pullRequestReleases.length > 0 && pullRequestReleases[0].labels.includes('lockDeploys')) {
               core.setFailed('Pull Request release has label lockDeploys')
             }
-            return pullRequestReleases
+            return {
+              skipCreatePullRequest: true,
+            }
 
       - name: Create pull request release
         uses: actions/github-script@v5
@@ -66,12 +69,12 @@ jobs:
                 repo: context.repo.repo,
                 head: 'staging',
                 base: 'main',
-                title: `Release ${today}`,
+                title: `Release - ${today}`,
                 body: `
-                  ## Fix:
-                  ## Feature:
-                  ## Modify:
-                  ## Breaking:
+                ## Fix:
+                ## Feature:
+                ## Modify:
+                ## Breaking:
                 `
               })
               console.log('createdPR', createdPR)
