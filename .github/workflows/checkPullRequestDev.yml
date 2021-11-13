@@ -41,7 +41,7 @@ jobs:
 
   updateBody:
     name: Update Pull Reqest Release
-    if: ${{ github.event.payload.pull_request.head.name == 'staging' }}
+    if: ${{ github.event.payload.pull_request.head.ref == 'staging' }}
     runs-on: ubuntu-latest
     steps:
       - name: Update Body
@@ -56,7 +56,6 @@ jobs:
               base: 'main',
               sort: 'updated',
             })
-            const 
             const pullRequestsMerged = pullRequests.data.filter((pullRequest) => 
               new Date(pullRequest.updated_at) > new Date(context.payload.pull_request.base.created_at)
             )
