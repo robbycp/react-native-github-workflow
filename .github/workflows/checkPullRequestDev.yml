@@ -22,7 +22,7 @@ jobs:
             const title = context.payload.pull_request.title
             const prefix = title.split('-')[0].trim()
             console.log('prefix', prefix)
-            const regex = /^[f|F]ix|[f|F]eature|[b|B]reaking|[m|M]odify$/
+            const regex = /^[f|F]ix|[f|F]eature|[b|B]reaking|[m|M]odify|[r|R]elease$/
             if (!prefix.match(regex)) {
               errorMessage += 'Prefix must be fix|modify|feature|breaking, '
             }
@@ -38,3 +38,46 @@ jobs:
             if (errorMessage) {
               core.setFailed(errorMessage)
             }
+
+      - name: Update Body Pull Request Release
+        if: ${{ github.event.payload.pull_request.head.name == 'staging' }}
+        uses: actions/github-script@v5
+        with:
+          script: |
+            // get list of merged PR
+            const pullRequests = await github.rest.pulls.list({
+              owner: context.actor,
+              repo: context.repo.repo,
+              state: 'all',
+              base: 'main',
+              sort: 'updated',
+            })
+            const 
+            const pullRequestsMerged = pullRequests.data.filter((pullRequest) => 
+              new Date(pullRequest.updated_at) > new Date(context.payload.pull_request.base.created_at)
+            )
+            const mappedTitle = (str) => {
+              const prefix = str.split('-')[0].trim().toLowerCase()
+              return {
+                type: prefix,
+                title: str,
+              }
+            }
+
+            // Generate and update pull request body
+            let body
+            const titles = pullRequestMerged.map((item) => mappedTitle(item.title))
+            ['feature', 'fix', 'breaking', 'modify'].forEach((type) => {
+              body += `##${type}`
+              const titleTypes = titles.filter((title) => title.type === type)
+              titleTypes.forEach((titleType) => {
+                body += titleType.title
+              })
+            })
+            console.log('body', body)
+            await github.rest.pulls.update({
+              owner: context.actor,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              body,
+            });
