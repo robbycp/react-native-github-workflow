@@ -41,8 +41,8 @@ jobs:
 
   updateBody:
     name: Update Pull Reqest Release
-    if: github.ref == 'ref/heads/staging'
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/staging'
     steps:
       - name: Update Body
         uses: actions/github-script@v5
