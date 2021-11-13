@@ -41,14 +41,13 @@ jobs:
 
   updateBody:
     name: Update Pull Reqest Release
-    # if: ${{ github.event.payload.pull_request.head.ref == 'staging' }}
+    if: ${{ github.ref == 'ref/heads/staging' }}
     runs-on: ubuntu-latest
     steps:
       - name: Update Body
         uses: actions/github-script@v5
         with:
           script: |
-            console.log('github', github)
             // get list of merged PR
             const pullRequests = await github.rest.pulls.list({
               owner: context.actor,
@@ -60,6 +59,9 @@ jobs:
             const pullRequestsMerged = pullRequests.data.filter((pullRequest) => 
               new Date(pullRequest.updated_at) > new Date(context.payload.pull_request.base.created_at)
             )
+            console.log('pullRequests.data', pullRequests.data)
+            console.log('pullRequestsMerged', pullRequestsMerged)
+            // Generate and update pull request body
             const mappedTitle = (str) => {
               const prefix = str.split('-')[0].trim().toLowerCase()
               return {
@@ -67,10 +69,9 @@ jobs:
                 title: str,
               }
             }
-
-            // Generate and update pull request body
             let body
             const titles = pullRequestsMerged.map((item) => mappedTitle(item.title))
+            console.log('titles', titles)
             ['feature', 'fix', 'breaking', 'modify'].forEach((type) => {
               body += `##${type}`
               const titleTypes = titles.filter((title) => title.type === type)
