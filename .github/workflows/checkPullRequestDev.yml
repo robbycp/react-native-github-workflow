@@ -70,7 +70,7 @@ jobs:
               }
             }
             let body
-            const titles = pullRequestsMerged.map((item) => mappedTitle(item.title))
+            const titles = pullRequestsStagingMerged.map((item) => mappedTitle(item.title))
             console.log('titles', titles)
             ['feature', 'fix', 'breaking', 'modify'].forEach((type) => {
               body += `##${type}`
