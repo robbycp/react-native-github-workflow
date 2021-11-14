@@ -52,12 +52,14 @@ jobs:
             const pullRequestsStaging = await github.rest.pulls.list({
               owner: context.actor,
               repo: context.repo.repo,
-              state: 'all',
+              state: 'closed',
               base: 'staging',
               sort: 'updated',
             })
             const pullRequestsStagingMerged = pullRequestsStaging.data.filter((pullRequest) => 
-              !!pullRequest.merged_at && new Date(pullRequest.merged_at) > new Date(context.payload.pull_request.base.updated_at)
+              !!pullRequest.merged_at
+              // open when no development changing from main
+              // && new Date(pullRequest.merged_at) > new Date(context.payload.pull_request.base.updated_at)
             )
             console.log('pullRequestsStaging.data', pullRequestsStaging.data)
             console.log('pullRequestsStagingMerged', pullRequestsStagingMerged)
