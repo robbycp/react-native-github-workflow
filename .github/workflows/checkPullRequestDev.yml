@@ -67,11 +67,11 @@ jobs:
             const mappedTitle = (str) => {
               const prefix = str.split('-')[0].trim().toLowerCase()
               return {
-                type: prefix,
+                prType: prefix,
                 title: str,
               }
             }
-            let body
+            let body = ''
             const titles = pullRequestsStagingMerged.map((item) => ({
               ...mappedTitle(item.title),
               url: item.url,
