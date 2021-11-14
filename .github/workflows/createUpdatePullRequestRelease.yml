@@ -1,4 +1,4 @@
-name: Check Pull Request Base
+name: Create or Update Pull Request Release
 
 on:
   push:
@@ -26,7 +26,7 @@ jobs:
               branch: 'staging',
             })
             console.log('repoMainData', repoMainData)
-            console.log('repoMainData', repoMainData.data.commit.commit)
+            console.log('repoMainData commit', repoMainData.data.commit.commit)
             console.log('repoStagingData', repoStagingData)
 
             // Skip Create / Update Pull Request
@@ -68,40 +68,52 @@ jobs:
                 `
               })
               console.log('createdPR', createdPR)
-            } else {
-              // Update
-              // Generate and update pull request body
-              const mappedTitle = (str) => {
-                const prefix = str.split('-')[0].trim().toLowerCase()
-                return {
-                  prType: prefix,
-                  title: str,
-                }
-              }
-              let body = ''
-              const titles = pullRequestsStagingMerged.map((item) => ({
-                ...mappedTitle(item.title),
-                url: item.url,
-              }))
-              console.log('titles', titles)
-              const listTypes = ['feature', 'fix', 'breaking', 'modify']
-              console.log('listTypes', listTypes)
-              listTypes.forEach((prType) => {
-                console.log('prType', prType)
-                body += `\n## ${prType}`
-                const titleTypes = titles.filter((title) => title.prType === prType)
-                titleTypes.forEach((titleType) => {
-                  body += `\n - ${titleType.title} [url](${titleType.url})`
-                })
-              })
-              console.log('body', body)
-              await github.rest.pulls.update({
-                owner: context.actor,
-                repo: context.repo.repo,
-                pull_number: context.payload.pull_request.number,
-                body,
-              });
+              return createdPR
             }
+
+            // Update
+            // Get Pull Request Release
+            // get list of merged PR
+            const pullRequestsReleases = await github.rest.pulls.list({
+              owner: context.actor,
+              repo: context.repo.repo,
+              state: 'open',
+              base: 'main',
+              sort: 'updated',
+            })
+            const pullRequestsRelease = pullRequestsReleases.data[0]
+
+            // Generate and update pull request body
+            const mappedTitle = (str) => {
+              const prefix = str.split('-')[0].trim().toLowerCase()
+              return {
+                prType: prefix,
+                title: str,
+              }
+            }
+            let body = ''
+            const titles = pullRequestsStagingMerged.map((item) => ({
+              ...mappedTitle(item.title),
+              url: item.url,
+            }))
+            console.log('titles', titles)
+            const listTypes = ['feature', 'fix', 'breaking', 'modify']
+            console.log('listTypes', listTypes)
+            listTypes.forEach((prType) => {
+              console.log('prType', prType)
+              body += `\n## ${prType}`
+              const titleTypes = titles.filter((title) => title.prType === prType)
+              titleTypes.forEach((titleType) => {
+                body += `\n - ${titleType.title} [url](${titleType.url})`
+              })
+            })
+            console.log('body', body)
+            await github.rest.pulls.update({
+              owner: context.actor,
+              repo: context.repo.repo,
+              pull_number: pullRequestsRelease.number,
+              body,
+            });
 
             return {
               skipCreatePullRequest: true,
