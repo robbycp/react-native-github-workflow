@@ -49,18 +49,18 @@ jobs:
         with:
           script: |
             // get list of merged PR
-            const pullRequests = await github.rest.pulls.list({
+            const pullRequestsStaging = await github.rest.pulls.list({
               owner: context.actor,
               repo: context.repo.repo,
               state: 'all',
-              base: 'main',
+              base: 'staging',
               sort: 'updated',
             })
-            const pullRequestsMerged = pullRequests.data.filter((pullRequest) => 
-              new Date(pullRequest.updated_at) > new Date(context.payload.pull_request.base.created_at)
+            const pullRequestsStagingMerged = pullRequestsStaging.data.filter((pullRequest) => 
+              !!pullRequest.merged_at && new Date(pullRequest.merged_at) > new Date(context.payload.pull_request.base.updated_at)
             )
-            console.log('pullRequests.data', pullRequests.data)
-            console.log('pullRequestsMerged', pullRequestsMerged)
+            console.log('pullRequestsStaging.data', pullRequestsStaging.data)
+            console.log('pullRequestsStagingMerged', pullRequestsStagingMerged)
             // Generate and update pull request body
             const mappedTitle = (str) => {
               const prefix = str.split('-')[0].trim().toLowerCase()
