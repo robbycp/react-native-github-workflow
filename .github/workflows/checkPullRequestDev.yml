@@ -72,13 +72,19 @@ jobs:
               }
             }
             let body
-            const titles = pullRequestsStagingMerged.map((item) => mappedTitle(item.title))
+            const titles = pullRequestsStagingMerged.map((item) => ({
+              ...mappedTitle(item.title),
+              url: item.url,
+            }))
             console.log('titles', titles)
-            ['feature', 'fix', 'breaking', 'modify'].forEach((type) => {
-              body += `##${type}`
-              const titleTypes = titles.filter((title) => title.type === type)
+            const listTypes = ['feature', 'fix', 'breaking', 'modify']
+            console.log('listTypes', listTypes)
+            listTypes.forEach((prType) => {
+              console.log('prType', prType)
+              body += `\n## ${prType}`
+              const titleTypes = titles.filter((title) => title.prType === prType)
               titleTypes.forEach((titleType) => {
-                body += titleType.title
+                body += `\n - ${titleType.title} [url](${titleType.url})`
               })
             })
             console.log('body', body)
