@@ -9,3 +9,4 @@ Playground github workflow applied for react native boilerplate repository
 - Check if pull request release
   - doesn't have label lockDeploys
 Addnotes5
+Addnotes1
