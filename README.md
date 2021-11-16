@@ -10,3 +10,4 @@ Playground github workflow applied for react native boilerplate repository
   - doesn't have label lockDeploys
 Addnotes5
 Addnotes1
+Addnotes2
