@@ -10,10 +10,25 @@ jobs:
     name: Create or update pull request release
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2.2.0
+        with:
+          fetch-depth: 0 # Required due to the weg Git works, without it this action won't be able to find any or the correct tags
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - run: npm ci
+      - run: npm install semver
+      - name: 'Get Previous tag'
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
       - name: Check should create / update
         uses: actions/github-script@v5
+        env:
+          TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
         with:
           script: |
+            const semver = require('semver')
+            console.log('TAG_LATEST', process.env.TAG_LATEST)
             // Check if there is no changes between branch staging and main
             const repoMainData = await github.rest.repos.getBranch({
               owner: context.repo.owner,
@@ -52,14 +67,14 @@ jobs:
             )
 
             if (pullRequestsStagingMerged.length === 0) {
+              const nextVersion = semver(process.env.LAST_TAG, 'patch')
               // Create
-              const today = new Date().toDateString()
               const createdPR = await github.rest.pulls.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 head: 'staging',
                 base: 'main',
-                title: `Release - ${today}`,
+                title: `Release - ${nextVersion}`,
                 body: `
                 ## Fix:
                 ## Feature:
@@ -97,21 +112,31 @@ jobs:
               url: item.url,
             }))
             console.log('titles', titles)
-            const listTypes = ['feature', 'fix', 'breaking', 'modify']
+            const listTypes = ['fix', feature', 'modify', 'breaking']
+            const mappingType = {
+              fix: 'patch',
+              feature: 'minor',
+              modify: 'minor',
+              breaking: 'major',
+            }
             console.log('listTypes', listTypes)
+            const releaseType = mappingType.fix
             listTypes.forEach((prType) => {
               console.log('prType', prType)
               body += `\n## ${prType}`
               const titleTypes = titles.filter((title) => title.prType === prType)
               titleTypes.forEach((titleType) => {
+                releaseType = mappingType[titleType]
                 body += `\n - ${titleType.title} [url](${titleType.url})`
               })
             })
+            const finalVersion = semver.inc(process.env.LAST_TAG, releaseType)
             console.log('body', body)
             await github.rest.pulls.update({
               owner: context.actor,
               repo: context.repo.repo,
               pull_number: pullRequestsRelease.number,
+              title: `Release - ${finalVersion}`
               body,
             });
 
