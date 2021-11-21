@@ -28,6 +28,6 @@ jobs:
           TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
         with:
           script: |
-            const script = require('./path/to/script.js')
+            const script = require('./scriptGithub/createUpdatePullRequest.js')
             script({github, context})
             
