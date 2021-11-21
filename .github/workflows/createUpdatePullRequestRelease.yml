@@ -16,8 +16,9 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 14
-      - run: npm ci
-      - run: npm install semver
+      - uses: borales/actions-yarn@v2.3.0
+        with:
+          cmd: install
       - name: 'Get Previous tag'
         id: previoustag
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
