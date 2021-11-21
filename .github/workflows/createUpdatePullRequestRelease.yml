@@ -25,7 +25,7 @@ jobs:
       - name: Check should create / update
         uses: actions/github-script@v5
         env:
-          TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
+          TAG_LATEST: ${{ steps.previoustag.outputs }}
         with:
           script: |
             const script = require('./scriptGithub/createUpdatePullRequest.js')
