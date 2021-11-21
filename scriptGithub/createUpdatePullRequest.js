@@ -32,14 +32,16 @@ module.exports = async ({github, context}) => {
     base: 'staging',
     sort: 'updated',
   });
+  console.log('pullRequestsStaging', pullRequestsStaging);
   const pullRequestsStagingMerged = pullRequestsStaging.data.filter(
     pullRequest => !!pullRequest.merged_at,
     // open when no development changing from main
     // && new Date(pullRequest.merged_at) > new Date(context.payload.pull_request.base.updated_at)
   );
+  console.log('pullRequestsStagingMerged', pullRequestsStagingMerged);
 
   if (pullRequestsStagingMerged.length === 0) {
-    const nextVersion = semver(process.env.LAST_TAG, 'patch');
+    const nextVersion = semver(process.env.TAG_LATEST.tag, 'patch');
     // Create
     const createdPR = await github.rest.pulls.create({
       owner: context.repo.owner,
@@ -102,7 +104,7 @@ module.exports = async ({github, context}) => {
       body += `\n - ${titleType.title} [url](${titleType.url})`;
     });
   });
-  const finalVersion = semver.inc(process.env.LAST_TAG, releaseType);
+  const finalVersion = semver.inc(process.env.TAG_LATEST.tag, releaseType);
   console.log('body', body);
   await github.rest.pulls.update({
     owner: context.actor,
