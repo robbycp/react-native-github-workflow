@@ -18,14 +18,15 @@ jobs:
           node-version: 14
       - uses: borales/actions-yarn@v2.3.0
         with:
-          cmd: install
+          cmd: install semver
       - name: 'Get Previous tag'
         id: previoustag
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
       - name: Check should create / update
         uses: actions/github-script@v5
         env:
-          TAG_LATEST: ${{ steps.previoustag.outputs }}
+          TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
+          TAG_LATEST_DATE: ${{ steps.previoustag.outputs.timestamp }}
         with:
           script: |
             const script = require('./scriptGithub/createUpdatePullRequest.js')

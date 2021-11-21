@@ -1,6 +1,7 @@
 module.exports = async ({github, context}) => {
   const semver = require('semver');
   console.log('TAG_LATEST', process.env.TAG_LATEST);
+  console.log('TAG_LATEST_DATE', process.env.TAG_LATEST_DATE);
   // Check if there is no changes between branch staging and main
   const repoMainData = await github.rest.repos.getBranch({
     owner: context.repo.owner,
@@ -24,20 +25,25 @@ module.exports = async ({github, context}) => {
   }
 
   // Check create / update
-  // get list of merged PR
-  const pullRequestsStaging = await github.rest.pulls.list({
+  // get list of merged PR to staging since last git tag
+  const lastTagReleaseDate = new Date(
+    process.env.TAG_LATEST_DATE,
+  ).toISOString();
+  console.log('lastTagReleaseDate', lastTagReleaseDate);
+  const pullRequestsStagingMerged = await github.rest.issues.listForRepo({
     owner: context.actor,
     repo: context.repo.repo,
     state: 'closed',
-    base: 'staging',
+    labels: ['QAPassed', 'dev'],
     sort: 'updated',
+    since: lastTagReleaseDate,
   });
-  console.log('pullRequestsStaging', pullRequestsStaging);
-  const pullRequestsStagingMerged = pullRequestsStaging.data.filter(
-    pullRequest => !!pullRequest.merged_at,
-    // open when no development changing from main
-    // && new Date(pullRequest.merged_at) > new Date(context.payload.pull_request.base.updated_at)
-  );
+  // console.log('pullRequestsStaging', pullRequestsStaging);
+  // const pullRequestsStagingMerged = pullRequestsStaging.data.filter(
+  //   pullRequest => !!pullRequest.merged_at,
+  //   // open when no development changing from main
+  //   // && new Date(pullRequest.merged_at) > new Date(context.payload.pull_request.base.updated_at)
+  // );
   console.log('pullRequestsStagingMerged', pullRequestsStagingMerged);
 
   if (pullRequestsStagingMerged.length === 0) {
