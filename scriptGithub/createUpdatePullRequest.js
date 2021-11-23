@@ -29,7 +29,7 @@ function generateBodyPR(pullRequestsStagingMerged) {
     body += `\n## ${prType}`;
     const titleTypes = titles.filter(title => title.prType === prType);
     titleTypes.forEach(titleType => {
-      releaseType = mappingType[titleType];
+      releaseType = mappingType[titleType.prType];
       body += `\n - ${titleType.title} [url](${titleType.url})`;
     });
   });
