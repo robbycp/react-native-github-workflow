@@ -33,7 +33,9 @@ function generateBodyPR(pullRequestsStagingMerged) {
       body += `\n - ${titleType.title} [url](${titleType.url})`;
     });
   });
-  const finalVersion = semver.inc(process.env.TAG_LATEST.tag, releaseType);
+  const finalVersion = semver.inc(process.env.TAG_LATEST, releaseType);
+  console.log('finalVersion', finalVersion);
+  console.log('releaseType', releaseType);
   console.log('body', body);
   return {
     body,
