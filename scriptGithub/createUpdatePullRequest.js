@@ -99,7 +99,7 @@ module.exports = async ({github, context}) => {
 
   const {body, finalVersion} = generateBodyPR(pullRequestsStagingMerged.data);
 
-  if (pullRequestsStagingMerged.data.length === 0) {
+  if (pullRequestsReleases.data.length === 0) {
     // Create PR
     const createdPR = await github.rest.pulls.create({
       owner: context.repo.owner,
