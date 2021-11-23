@@ -1,5 +1,47 @@
-module.exports = async ({github, context}) => {
+function generateBodyPR(pullRequestsStagingMerged) {
   const semver = require('semver');
+
+  // Generate and update pull request body
+  const mappedTitle = str => {
+    const prefix = str.split('-')[0].trim().toLowerCase();
+    return {
+      prType: prefix,
+      title: str,
+    };
+  };
+  let body = '';
+  const titles = pullRequestsStagingMerged.map(item => ({
+    ...mappedTitle(item.title),
+    url: item.url,
+  }));
+  console.log('titles', titles);
+  const listTypes = ['fix', 'feature', 'modify', 'breaking'];
+  const mappingType = {
+    fix: 'patch',
+    feature: 'minor',
+    modify: 'minor',
+    breaking: 'major',
+  };
+  console.log('listTypes', listTypes);
+  let releaseType = mappingType.fix;
+  listTypes.forEach(prType => {
+    console.log('prType', prType);
+    body += `\n## ${prType}`;
+    const titleTypes = titles.filter(title => title.prType === prType);
+    titleTypes.forEach(titleType => {
+      releaseType = mappingType[titleType];
+      body += `\n - ${titleType.title} [url](${titleType.url})`;
+    });
+  });
+  const finalVersion = semver.inc(process.env.TAG_LATEST.tag, releaseType);
+  console.log('body', body);
+  return {
+    body,
+    finalVersion,
+  };
+}
+
+module.exports = async ({github, context}) => {
   console.log('TAG_LATEST', process.env.TAG_LATEST);
   console.log('TAG_LATEST_DATE', process.env.TAG_LATEST_DATE);
   // Check if there is no changes between branch staging and main
@@ -46,29 +88,7 @@ module.exports = async ({github, context}) => {
   // );
   console.log('pullRequestsStagingMerged', pullRequestsStagingMerged);
 
-  if (pullRequestsStagingMerged.data.length === 0) {
-    const nextVersion = semver(process.env.TAG_LATEST.tag, 'patch');
-    // Create
-    const createdPR = await github.rest.pulls.create({
-      owner: context.repo.owner,
-      repo: context.repo.repo,
-      head: 'staging',
-      base: 'main',
-      title: `Release - ${nextVersion}`,
-      body: `
-      ## Fix:
-      ## Feature:
-      ## Modify:
-      ## Breaking:
-      `,
-    });
-    console.log('createdPR', createdPR);
-    return createdPR;
-  }
-
-  // Update
   // Get Pull Request Release
-  // get list of merged PR
   const pullRequestsReleases = await github.rest.pulls.list({
     owner: context.actor,
     repo: context.repo.repo,
@@ -76,42 +96,25 @@ module.exports = async ({github, context}) => {
     base: 'main',
     sort: 'updated',
   });
-  const pullRequestsRelease = pullRequestsReleases.data[0];
 
-  // Generate and update pull request body
-  const mappedTitle = str => {
-    const prefix = str.split('-')[0].trim().toLowerCase();
-    return {
-      prType: prefix,
-      title: str,
-    };
-  };
-  let body = '';
-  const titles = pullRequestsStagingMerged.data.map(item => ({
-    ...mappedTitle(item.title),
-    url: item.url,
-  }));
-  console.log('titles', titles);
-  const listTypes = ['fix', 'feature', 'modify', 'breaking'];
-  const mappingType = {
-    fix: 'patch',
-    feature: 'minor',
-    modify: 'minor',
-    breaking: 'major',
-  };
-  console.log('listTypes', listTypes);
-  let releaseType = mappingType.fix;
-  listTypes.forEach(prType => {
-    console.log('prType', prType);
-    body += `\n## ${prType}`;
-    const titleTypes = titles.filter(title => title.prType === prType);
-    titleTypes.forEach(titleType => {
-      releaseType = mappingType[titleType];
-      body += `\n - ${titleType.title} [url](${titleType.url})`;
+  const {body, finalVersion} = generateBodyPR(pullRequestsStagingMerged.data);
+
+  if (pullRequestsStagingMerged.data.length === 0) {
+    // Create PR
+    const createdPR = await github.rest.pulls.create({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      head: 'staging',
+      base: 'main',
+      title: `Release - ${finalVersion}`,
+      body,
     });
-  });
-  const finalVersion = semver.inc(process.env.TAG_LATEST.tag, releaseType);
-  console.log('body', body);
+    console.log('createdPR', createdPR);
+    return createdPR;
+  }
+
+  // Update
+  const pullRequestsRelease = pullRequestsReleases.data[0];
   await github.rest.pulls.update({
     owner: context.actor,
     repo: context.repo.repo,
