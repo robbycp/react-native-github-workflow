@@ -27,7 +27,7 @@ module.exports = async ({github, context}) => {
   // Check create / update
   // get list of merged PR to staging since last git tag
   const lastTagReleaseDate = new Date(
-    process.env.TAG_LATEST_DATE,
+    Number(process.env.TAG_LATEST_DATE) * 1000,
   ).toISOString();
   console.log('lastTagReleaseDate', lastTagReleaseDate);
   const pullRequestsStagingMerged = await github.rest.issues.listForRepo({
