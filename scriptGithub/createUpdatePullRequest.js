@@ -46,7 +46,7 @@ module.exports = async ({github, context}) => {
   // );
   console.log('pullRequestsStagingMerged', pullRequestsStagingMerged);
 
-  if (pullRequestsStagingMerged.length === 0) {
+  if (pullRequestsStagingMerged.data.length === 0) {
     const nextVersion = semver(process.env.TAG_LATEST.tag, 'patch');
     // Create
     const createdPR = await github.rest.pulls.create({
@@ -87,7 +87,7 @@ module.exports = async ({github, context}) => {
     };
   };
   let body = '';
-  const titles = pullRequestsStagingMerged.map(item => ({
+  const titles = pullRequestsStagingMerged.data.map(item => ({
     ...mappedTitle(item.title),
     url: item.url,
   }));
