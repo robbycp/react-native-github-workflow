@@ -32,7 +32,7 @@ jobs:
             const script = require('./scriptGithub/checkPullRequest.js')
             script({github, context})
       - name: Create Pull Request
-        if: ${{ fromJSON(steps.checkCreateUpdate.outputs.processType) == 'create' }}
+        if: steps.checkCreateUpdate.outputs.processType) == 'create'
         uses: actions/github-script@v5
         env:
           TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
@@ -41,7 +41,7 @@ jobs:
             const script = require('./scriptGithub/createPullRequest.js')
             script({github, exec, context})
       - name: Update Pull Request
-        if: ${{ fromJSON(steps.checkCreateUpdate.outputs.processType) == 'update' }}
+        if: steps.checkCreateUpdate.outputs.processType) == 'update'
         uses: actions/github-script@v5
         env:
           PR_NUMBER: ${{ steps.checkCreateUpdate.outputs.prNumber }}
