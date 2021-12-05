@@ -39,7 +39,7 @@ jobs:
         with:
           script: |
             const script = require('./scriptGithub/createPullRequest.js')
-            script({github, context})
+            script({github, exec, context})
       - name: Update Pull Request
         if: fromJSON(steps.checkCreateUpdate.outputs.processType) == 'update'
         uses: actions/github-script@v5
@@ -50,5 +50,5 @@ jobs:
         with:
           script: |
             const script = require('./scriptGithub/updatePullRequest.js')
-            script({github, exec, context})
+            script({github, context})
             
