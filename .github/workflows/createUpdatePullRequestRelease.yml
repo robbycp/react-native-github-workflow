@@ -43,6 +43,9 @@ jobs:
             console.log('process.env.RESULT', typeof process.env.RESULT)
             // const script = require('./scriptGithub/createPullRequest.js')
             // script({github, exec, context})
+
+            // Test
+            // fromJSON(steps.checkCreateUpdate.outputs.result.processType) => error reading JToken
       - name: Update Pull Request
         if: fromJson(steps.checkCreateUpdate.outputs.result).processType == 'update'
         uses: actions/github-script@v5
