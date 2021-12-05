@@ -38,9 +38,9 @@ module.exports = async ({github, context}) => {
   } else {
     output = {
       processType: 'update',
-      prNumber: pullRequestsReleases.data[0],
+      prNumber: pullRequestsReleases.data[0].number,
     };
   }
   console.log('output', output);
-  return JSON.stringify(output);
+  return output;
 };

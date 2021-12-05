@@ -36,16 +36,21 @@ jobs:
         uses: actions/github-script@v5
         env:
           TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
-          RESULT: ${{ fromJSON(steps.checkCreateUpdate.outputs.result) }}
+          PROCESS_TYPE: ${{ fromJSON(steps.checkCreateUpdate.outputs.result.processType) }}
+          PR_NUMBER: ${{ fromJSON(steps.checkCreateUpdate.outputs.result.prNumber) }}
         with:
           script: |
-            console.log('process.env.RESULT', process.env.RESULT)
-            console.log('process.env.RESULT', typeof process.env.RESULT)
+            console.log('process.env.PROCESS_TYPE', process.env.PROCESS_TYPE)
+            console.log('process.env.PROCESS_TYPE', typeof process.env.PROCESS_TYPE)
+            console.log('process.env.PR_NUMBER', process.env.PR_NUMBER)
+            console.log('process.env.PR_NUMBER', typeof process.env.PR_NUMBER)
             // const script = require('./scriptGithub/createPullRequest.js')
             // script({github, exec, context})
 
             // Test
             // fromJSON(steps.checkCreateUpdate.outputs.result.processType) => error reading JToken
+            // stringify in script return => not working
+
       - name: Update Pull Request
         if: fromJson(steps.checkCreateUpdate.outputs.result).processType == 'update'
         uses: actions/github-script@v5
