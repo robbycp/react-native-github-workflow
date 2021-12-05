@@ -32,7 +32,6 @@ jobs:
             const script = require('./scriptGithub/checkPullRequest.js')
             script({github, context})
       - name: Create Pull Request
-        # if: fromJson(steps.checkCreateUpdate.outputs.result).processType == 'create'
         uses: actions/github-script@v5
         env:
           TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
@@ -52,14 +51,14 @@ jobs:
             // stringify in script return => not working
 
       - name: Update Pull Request
-        if: fromJson(steps.checkCreateUpdate.outputs.result).processType == 'update'
         uses: actions/github-script@v5
         env:
-          PR_NUMBER: ${{ steps.checkCreateUpdate.outputs.prNumber }}
           TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
           TAG_LATEST_DATE: ${{ steps.previoustag.outputs.timestamp }}
         with:
           script: |
-            const script = require('./scriptGithub/updatePullRequest.js')
-            script({github, context})
+            const test = ${{ steps.checkCreateUpdate.outputs.result }};
+            console.log('test', test);
+            // const script = require('./scriptGithub/updatePullRequest.js')
+            // script({github, context})
             
