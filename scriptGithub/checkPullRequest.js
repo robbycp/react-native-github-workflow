@@ -31,11 +31,12 @@ module.exports = async ({github, context}) => {
   });
 
   if (pullRequestsReleases.data.length === 0) {
+    console.log('create pull request');
     return {
       processType: 'create',
     };
   }
-
+  console.log('update pull request');
   return {
     processType: 'update',
     prNumber: pullRequestsReleases.data[0],
