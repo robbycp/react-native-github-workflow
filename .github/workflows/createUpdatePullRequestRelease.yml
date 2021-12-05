@@ -36,7 +36,7 @@ jobs:
         uses: actions/github-script@v5
         env:
           TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
-          RESULT: ${{ fromJSON(steps.checkCreateUpdate.outputs.result) }}
+          RESULT: ${{ fromJSON(steps.checkCreateUpdate.outputs.result.processType) }}
         with:
           script: |
             console.log('process.env.RESULT', process.env.RESULT)
