@@ -36,8 +36,8 @@ jobs:
         uses: actions/github-script@v5
         env:
           TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
-          PROCESS_TYPE: ${{ fromJSON(steps.checkCreateUpdate.outputs.result.processType) }}
-          PR_NUMBER: ${{ fromJSON(steps.checkCreateUpdate.outputs.result.prNumber) }}
+          PROCESS_TYPE: ${{ steps.checkCreateUpdate.outputs.result.processType }}
+          PR_NUMBER: ${{ steps.checkCreateUpdate.outputs.result.prNumber }}
         with:
           script: |
             console.log('process.env.PROCESS_TYPE', process.env.PROCESS_TYPE)
