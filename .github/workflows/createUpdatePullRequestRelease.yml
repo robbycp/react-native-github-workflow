@@ -31,7 +31,6 @@ jobs:
           script: |
             const script = require('./scriptGithub/checkPullRequest.js')
             script({github, context})
-          script-encoding: js
       - name: Create Pull Request
         # if: fromJson(steps.checkCreateUpdate.outputs.result).processType == 'create'
         uses: actions/github-script@v5
