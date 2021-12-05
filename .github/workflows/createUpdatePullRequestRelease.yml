@@ -33,14 +33,17 @@ jobs:
             script({github, context})
           script-encoding: js
       - name: Create Pull Request
-        if: fromJson(steps.checkCreateUpdate.outputs.result).processType == 'create'
+        # if: fromJson(steps.checkCreateUpdate.outputs.result).processType == 'create'
         uses: actions/github-script@v5
         env:
           TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
+          RESULT: ${{ steps.checkCreateUpdate.outputs }}
         with:
           script: |
-            const script = require('./scriptGithub/createPullRequest.js')
-            script({github, exec, context})
+            console.log('process.env.RESULT', process.env.RESULT)
+            console.log('process.env.RESULT', typeof process.env.RESULT)
+            // const script = require('./scriptGithub/createPullRequest.js')
+            // script({github, exec, context})
       - name: Update Pull Request
         if: fromJson(steps.checkCreateUpdate.outputs.result).processType == 'update'
         uses: actions/github-script@v5
