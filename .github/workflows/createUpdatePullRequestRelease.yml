@@ -2,8 +2,7 @@ name: Create or Update Pull Request Release
 
 on:
   push:
-    branches:
-      - staging
+    branches: [staging, main]
 
 jobs:
   check:
@@ -22,13 +21,34 @@ jobs:
       - name: 'Get Previous tag'
         id: previoustag
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
-      - name: Check should create / update
+      - name: Check create / update
+        id: checkCreateUpdate
         uses: actions/github-script@v5
         env:
           TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
           TAG_LATEST_DATE: ${{ steps.previoustag.outputs.timestamp }}
         with:
           script: |
-            const script = require('./scriptGithub/createUpdatePullRequest.js')
+            const script = require('./scriptGithub/checkPullRequest.js')
             script({github, context})
+      - name: Create Pull Request
+        if: steps.checkCreateUpdate.outputs.processType === 'create'
+        uses: actions/github-script@v5
+        env:
+          TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
+        with:
+          script: |
+            const script = require('./scriptGithub/createPullRequest.js')
+            script({github, context})
+      - name: Update Pull Request
+        if: steps.checkCreateUpdate.outputs.processType === 'update'
+        uses: actions/github-script@v5
+        env:
+          PR_NUMBER: ${{ steps.checkCreateUpdate.outputs.prNumber }}
+          TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
+          TAG_LATEST_DATE: ${{ steps.previoustag.outputs.timestamp }}
+        with:
+          script: |
+            const script = require('./scriptGithub/updatePullRequest.js')
+            script({github, exec, context})
             
