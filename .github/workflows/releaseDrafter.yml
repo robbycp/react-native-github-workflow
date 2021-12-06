@@ -20,51 +20,5 @@ jobs:
         # with:
         #   config-name: my-config.yml
         #   disable-autolabeler: true
-        with:
-          name-template: 'v$RESOLVED_VERSION 🌈'
-          tag-template: 'v$RESOLVED_VERSION'
-          categories:
-            - title: '🚀 Features'
-              labels:
-                - 'feature'
-                - 'enhancement'
-                - 'modify'
-            - title: '🐛 Bug Fixes'
-              labels:
-                - 'fix'
-                - 'bugfix'
-                - 'bug'
-            - title: '🧰 Breaking'
-              label: 'breaking'
-          change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
-          change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
-          autolabeler:
-            - label: 'fix'
-              title:
-                - '/fix/i'
-            - label: 'modify'
-              title:
-                - '/modify/i'
-            - label: 'feature'
-              title:
-                - '/feature/i'
-            - label: 'breaking'
-              title:
-                - '/breaking/i'
-          version-resolver:
-            major:
-              labels:
-                - 'major'
-            minor:
-              labels:
-                - 'minor'
-            patch:
-              labels:
-                - 'patch'
-            default: patch
-          template: |
-            ## Changes
-
-            $CHANGES
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
