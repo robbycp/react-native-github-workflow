@@ -35,10 +35,13 @@ jobs:
         uses: actions/github-script@v5
         env:
           TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
+          RESULT: ${{ steps.checkCreateUpdate.outputs.result }}
           PROCESS_TYPE: ${{ steps.checkCreateUpdate.outputs.result.processType }}
           PR_NUMBER: ${{ steps.checkCreateUpdate.outputs.result.prNumber }}
         with:
           script: |
+            console.log('process.env.RESULT', process.env.RESULT)
+            console.log('process.env.RESULT', typeof process.env.RESULT)
             console.log('process.env.PROCESS_TYPE', process.env.PROCESS_TYPE)
             console.log('process.env.PROCESS_TYPE', typeof process.env.PROCESS_TYPE)
             console.log('process.env.PR_NUMBER', process.env.PR_NUMBER)
