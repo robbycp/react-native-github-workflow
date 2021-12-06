@@ -35,7 +35,7 @@ jobs:
 
       - name: Create Pull Request
         uses: actions/github-script@v5
-        if: steps.checkCreateUpdate.outputs.result.processType == 'create'
+        if: ${{ steps.checkCreateUpdate.outputs.result.processType == 'create' }}
         env:
           TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
         with:
@@ -44,7 +44,7 @@ jobs:
             script({github, exec, context})
 
       - name: Update Pull Request
-        if: steps.checkCreateUpdate.outputs.result.processType == 'update'
+        if: ${{ steps.checkCreateUpdate.outputs.result.processType == 'update' }}
         uses: actions/github-script@v5
         env:
           TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
