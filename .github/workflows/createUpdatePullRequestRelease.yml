@@ -53,7 +53,7 @@ jobs:
           script: |
             const result = ${{ steps.checkCreateUpdate.outputs.result }}
             const processType = ${{ steps.checkCreateUpdate.outputs.result.processType }}
-            const isProcessTypeUpdate = ${{ toJSON(steps.checkCreateUpdate.outputs.result) }}
+            const isProcessTypeUpdate = ${{ fromJSON(steps.checkCreateUpdate.outputs.result) }}
             console.log('result', result)
             console.log('result', typeof result)
             console.log('processType', processType)
