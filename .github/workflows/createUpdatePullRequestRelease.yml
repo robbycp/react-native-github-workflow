@@ -32,39 +32,26 @@ jobs:
             const script = require('./scriptGithub/checkPullRequest.js')
             const result = script({github, context})
             return result
+
       - name: Create Pull Request
         uses: actions/github-script@v5
         if: steps.checkCreateUpdate.outputs.result.processType == 'create'
         env:
           TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
-          RESULT: ${{ steps.checkCreateUpdate.outputs.result }}
-          PROCESS_TYPE: ${{ steps.checkCreateUpdate.outputs.result.processType }}
-          PR_NUMBER: ${{ steps.checkCreateUpdate.outputs.result.prNumber }}
         with:
           script: |
-            console.log('process.env.RESULT', process.env.RESULT)
-            console.log('process.env.RESULT', typeof process.env.RESULT)
-            console.log('process.env.PROCESS_TYPE', process.env.PROCESS_TYPE)
-            console.log('process.env.PROCESS_TYPE', typeof process.env.PROCESS_TYPE)
-            console.log('process.env.PR_NUMBER', process.env.PR_NUMBER)
-            console.log('process.env.PR_NUMBER', typeof process.env.PR_NUMBER)
-            // const script = require('./scriptGithub/createPullRequest.js')
-            // script({github, exec, context})
-
-            // Test
-            // fromJSON(steps.checkCreateUpdate.outputs.result.processType) => error reading JToken
-            // stringify in script return => not working
+            const script = require('./scriptGithub/createPullRequest.js')
+            script({github, exec, context})
 
       - name: Update Pull Request
+        if: steps.checkCreateUpdate.outputs.result.processType == 'update'
         uses: actions/github-script@v5
         env:
           TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
           TAG_LATEST_DATE: ${{ steps.previoustag.outputs.timestamp }}
         with:
           script: |
-            const test = ${{ steps.checkCreateUpdate.outputs.result }}
-            console.log('test', test)
-            console.log('test', typeof test)
-            // const script = require('./scriptGithub/updatePullRequest.js')
-            // script({github, context})
+            const result = ${{ steps.checkCreateUpdate.outputs.result }}
+            const script = require('./scriptGithub/updatePullRequest.js')
+            script({github, context, result})
             
