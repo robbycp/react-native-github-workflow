@@ -53,10 +53,13 @@ jobs:
           script: |
             const result = ${{ steps.checkCreateUpdate.outputs.result }}
             const processType = ${{ steps.checkCreateUpdate.outputs.result.processType }}
+            const isProcessTypeUpdate = ${{ toJSON(steps.checkCreateUpdate.outputs.result) }}
             console.log('result', result)
             console.log('result', typeof result)
             console.log('processType', processType)
             console.log('processType', typeof processType)
+            console.log('isProcessTypeUpdate', isProcessTypeUpdate)
+            console.log('isProcessTypeUpdate', typeof isProcessTypeUpdate)
             // const script = require('./scriptGithub/updatePullRequest.js')
             // script({github, context, result})
             
