@@ -44,7 +44,7 @@ jobs:
             script({github, exec, context})
 
       - name: Update Pull Request
-        # if: ${{ fromJSON(steps.checkCreateUpdate.outputs.result).processType == 'update' }}
+        if: ${{ fromJSON(steps.checkCreateUpdate.outputs.result).processType == 'update' }}
         uses: actions/github-script@v5
         env:
           TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
