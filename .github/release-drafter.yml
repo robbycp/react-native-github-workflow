@@ -1,5 +1,7 @@
-name-template: 'v$RESOLVED_VERSION 🥺'
-tag-template: 'v$RESOLVED_VERSION'
+name-template: '$RESOLVED_VERSION'
+tag-template: '$RESOLVED_VERSION'
+exclude-labels:
+  - "release"
 categories:
   - title: '🚀 Features'
     labels:
@@ -18,25 +20,27 @@ change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add
 autolabeler:
   - label: 'bug'
     title:
-      - '/bug/i'
-      - '/fix/i'
+      - '/[B|b]ug/i'
+      - '/[F|f]ix/i'
   - label: 'enhancement'
     title:
-      - '/modify/i'
-      - '/feature/i'
+      - '/[M|m]odify/i'
+      - '/[F|f]eature/i'
   - label: 'breaking'
     title:
-      - '/breaking/i'
+      - '/[B|b]reaking/i'
 version-resolver:
   major:
     labels:
-      - 'major'
+      - 'breaking'
   minor:
     labels:
-      - 'minor'
+      - 'modify'
+      - 'feature'
   patch:
     labels:
-      - 'patch'
+      - 'bug'
+      - 'fix'
   default: patch
 template: |
   ## Changes
