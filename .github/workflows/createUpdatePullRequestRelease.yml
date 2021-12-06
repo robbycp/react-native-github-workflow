@@ -29,17 +29,14 @@ jobs:
           TAG_LATEST_DATE: ${{ steps.previoustag.outputs.timestamp }}
         with:
           script: |
-            // const script = require('./scriptGithub/checkPullRequest.js')
-            // script({github, context})
-            return {
-              processType: 'update',
-              prNumber: 2,
-            }
+            const script = require('./scriptGithub/checkPullRequest.js')
+            const result = script({github, context})
+            return result
       - name: Create Pull Request
         uses: actions/github-script@v5
         env:
           TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
-          RESULT: ${{ steps.checkCreateUpdate.outputs.result }}
+          RESULT: ${{ toJSON(steps.checkCreateUpdate.outputs.result) }}
           PROCESS_TYPE: ${{ steps.checkCreateUpdate.outputs.result.processType }}
           PR_NUMBER: ${{ steps.checkCreateUpdate.outputs.result.prNumber }}
         with:
