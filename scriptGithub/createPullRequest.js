@@ -9,21 +9,23 @@ module.exports = async ({context, exec, github}) => {
   // Commit changes package.json
   await exec.exec('git checkout staging');
   try {
-    const jsonString = fs.readFileSync('../package.json');
+    const jsonString = fs.readFileSync('./package.json');
     const packageJson = JSON.parse(jsonString);
     console.log('first version', packageJson);
-    packageJson.version = semver.inc(packageJson.version, 'patch');
+    packageJson.version = finalVersion;
     const stringifyOutput = JSON.stringify(packageJson, null, 2);
     console.log('second version', stringifyOutput);
-    fs.writeFileSync('../package.json', stringifyOutput);
+    fs.writeFileSync('./package.json', stringifyOutput);
   } catch (err) {
     console.log(err);
   }
   await exec.exec('git add .');
   await exec.exec('git', [
     'commit',
-    '[MODIFY] patch version package.json to start new pull request release',
+    '-m',
+    "'[MODIFY] patch version package.json to start new pull request release'",
   ]);
+  await exec.exec('git push origin staging');
 
   // Create PR
   const createdPR = await github.rest.pulls.create({
