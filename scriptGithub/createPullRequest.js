@@ -22,6 +22,7 @@ module.exports = async ({context, exec, github}) => {
   await exec.exec('git add .');
   await exec.exec('git', [
     'commit',
+    '-m',
     "'[MODIFY] patch version package.json to start new pull request release'",
   ]);
   await exec.exec('git push origin staging');
