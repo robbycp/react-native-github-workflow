@@ -39,7 +39,10 @@ jobs:
             // Check label if dev or release
             const labelDev = labels.find((item) => item.name === 'dev')
             const labelRelease = labels.find((item) => item.name === 'release')
-            if (!labelDev || !labelRelease) {
+            if (
+              (context.payload.pull_request.base.name === 'main' && !labelRelease)
+              || (context.payload.pull_request.base.name === 'staging' && !labelDev)
+            ) {
               errorMessage += 'must have label dev or release'
             }
             console.log('errorMessage', errorMessage)
