@@ -34,6 +34,7 @@ module.exports = async ({context, exec, github}) => {
     head: 'staging',
     base: 'main',
     title: `Release - ${finalVersion}`,
+    labels: ['release'],
     body: `
     ## fix
     ## feature
