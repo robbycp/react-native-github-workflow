@@ -43,8 +43,7 @@ function generateBodyPR(pullRequestsStagingMerged) {
   };
 }
 
-module.exports = async ({context, github, result}) => {
-  console.log('result', result);
+module.exports = async ({context, github}) => {
   // get list of merged PR to staging since last git tag
   const lastTagReleaseDate = new Date(
     Number(process.env.TAG_LATEST_DATE) * 1000,
@@ -63,11 +62,20 @@ module.exports = async ({context, github, result}) => {
   // generate body
   const {body, finalVersion} = generateBodyPR(pullRequestsStagingMerged.data);
 
+  // Get Pull Request Release
+  const pullRequestsReleases = await github.rest.pulls.list({
+    owner: context.actor,
+    repo: context.repo.repo,
+    state: 'open',
+    base: 'main',
+    sort: 'updated',
+  });
+
   // Update
   await github.rest.pulls.update({
     owner: context.actor,
     repo: context.repo.repo,
-    pull_number: result.prNumber,
+    pull_number: pullRequestsReleases[0].prNumber,
     title: `Release - ${finalVersion}`,
     labels: ['release'],
     body,

@@ -50,7 +50,6 @@ jobs:
           TAG_LATEST_DATE: ${{ steps.previoustag.outputs.timestamp }}
         with:
           script: |
-            const result = ${{ steps.checkCreateUpdate.outputs.result }}
             const script = require('./scriptGithub/updatePullRequest.js')
-            script({github, context, result})
+            script({github, context})
             
