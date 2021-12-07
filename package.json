@@ -1,6 +1,6 @@
 {
   "name": "myapp",
-  "version": "0.0.1",
+  "version": "0.2.1",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "react": "17.0.2",
-    "react-native": "0.66.3"
+    "react-native": "0.66.3",
+    "semver": "^7.3.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
