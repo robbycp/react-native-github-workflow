@@ -35,14 +35,11 @@ version-resolver:
       - 'breaking'
   minor:
     labels:
-      - 'modify'
-      - 'feature'
+      - 'enhancement'
   patch:
     labels:
       - 'bug'
       - 'fix'
   default: patch
 template: |
-  ## Changes
-
   $CHANGES

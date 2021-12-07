@@ -69,6 +69,7 @@ module.exports = async ({context, github, result}) => {
     repo: context.repo.repo,
     pull_number: result.prNumber,
     title: `Release - ${finalVersion}`,
+    labels: ['release'],
     body,
   });
 };
