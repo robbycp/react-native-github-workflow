@@ -1,0 +1,24 @@
+name: Create Pull Request Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  create:
+    name: Create pull request release
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Get Previous tag'
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      - name: Create Pull Request
+        uses: actions/github-script@v5
+        env:
+          TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
+        with:
+          script: |
+            console.log('TAG_LATEST', process.env.TAG_LATEST)
+            console.log('context', context)
+            const script = require('./scriptGithub/createPullRequest.js')
+            script({github, exec, context})
