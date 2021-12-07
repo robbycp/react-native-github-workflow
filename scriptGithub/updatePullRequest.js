@@ -70,12 +70,13 @@ module.exports = async ({context, github}) => {
     base: 'main',
     sort: 'updated',
   });
+  console.log('pullRequestsReleases', pullRequestsReleases);
 
   // Update
   await github.rest.pulls.update({
     owner: context.actor,
     repo: context.repo.repo,
-    pull_number: pullRequestsReleases[0].prNumber,
+    pull_number: pullRequestsReleases.data[0].number,
     title: `Release - ${finalVersion}`,
     labels: ['release'],
     body,
