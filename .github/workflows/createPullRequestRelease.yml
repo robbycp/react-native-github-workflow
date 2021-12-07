@@ -1,6 +1,8 @@
 name: Create Pull Request Release
 
 on:
+  push:
+    branches: [main]
   release:
     types: [published]
 
