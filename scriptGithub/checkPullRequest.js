@@ -30,15 +30,17 @@ module.exports = async ({github, context}) => {
     sort: 'updated',
   });
 
+  let output = {};
   if (pullRequestsReleases.data.length === 0) {
-    console.log('create pull request');
-    return {
+    output = {
       processType: 'create',
     };
+  } else {
+    output = {
+      processType: 'update',
+      prNumber: pullRequestsReleases.data[0].number,
+    };
   }
-  console.log('update pull request');
-  return {
-    processType: 'update',
-    prNumber: pullRequestsReleases.data[0],
-  };
+  console.log('output', output);
+  return output;
 };

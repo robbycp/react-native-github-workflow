@@ -30,25 +30,28 @@ jobs:
         with:
           script: |
             const script = require('./scriptGithub/checkPullRequest.js')
-            script({github, context})
+            const result = script({github, context})
+            return result
+
       - name: Create Pull Request
-        if: steps.checkCreateUpdate.outputs.result.processType == 'create'
         uses: actions/github-script@v5
+        if: ${{ fromJSON(steps.checkCreateUpdate.outputs.result).processType == 'create' }}
         env:
           TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
         with:
           script: |
             const script = require('./scriptGithub/createPullRequest.js')
             script({github, exec, context})
+
       - name: Update Pull Request
-        if: steps.checkCreateUpdate.outputs.result.processType == 'update'
+        if: ${{ fromJSON(steps.checkCreateUpdate.outputs.result).processType == 'update' }}
         uses: actions/github-script@v5
         env:
-          PR_NUMBER: ${{ steps.checkCreateUpdate.outputs.prNumber }}
           TAG_LATEST: ${{ steps.previoustag.outputs.tag }}
           TAG_LATEST_DATE: ${{ steps.previoustag.outputs.timestamp }}
         with:
           script: |
+            const result = ${{ steps.checkCreateUpdate.outputs.result }}
             const script = require('./scriptGithub/updatePullRequest.js')
-            script({github, context})
+            script({github, context, result})
             
