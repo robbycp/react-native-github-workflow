@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 23,
   },
   sectionTitle: {
-    fontSize: 24,
+    fontSize: 23,
     fontWeight: '600',
   },
   sectionDescription: {
