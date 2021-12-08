@@ -96,7 +96,7 @@ const App = () => {
 const styles = StyleSheet.create({
   sectionContainer: {
     marginTop: 33,
-    paddingHorizontal: 24,
+    paddingHorizontal: 23,
   },
   sectionTitle: {
     fontSize: 24,
