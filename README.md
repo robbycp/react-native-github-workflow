@@ -1,11 +1,2 @@
 # react-native-github-workflow
-Playground github workflow applied for react native boilerplate repository
-
-## Workflows
-### checkPullRequest
-- Check if pull request dev
-  - has formatted title : fix, feature, modify, breaking
-  - has label QAPassed
-- Check if pull request release
-  - doesn't have label lockDeploys
-Addnotes7
+Playground github workflow applied for react native boilerplate repository. Latest in production flows and diagram could be found in the main repository.
