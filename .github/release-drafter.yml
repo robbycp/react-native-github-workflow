@@ -3,7 +3,6 @@ tag-template: '$RESOLVED_VERSION'
 exclude-labels:
   - 'release'
 include-labels:
-  - 'dev'
   - 'QAPassed'
 categories:
   - title: '🚀 Features'
