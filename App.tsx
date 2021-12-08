@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   sectionDescription: {
-    marginTop: 8,
+    marginTop: 7,
     fontSize: 18,
     fontWeight: '400',
   },
