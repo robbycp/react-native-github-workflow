@@ -1,7 +1,10 @@
 name-template: '$RESOLVED_VERSION'
 tag-template: '$RESOLVED_VERSION'
 exclude-labels:
-  - "release"
+  - 'release'
+include-labels:
+  - 'dev'
+  - 'QAPassed'
 categories:
   - title: '🚀 Features'
     labels:
