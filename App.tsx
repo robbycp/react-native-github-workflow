@@ -74,8 +74,8 @@ const App = () => {
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
           <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
+            Edit Test <Text style={styles.highlight}>App.tsx</Text> to change
+            this screen and then come back to see your edits. Test
           </Section>
           <Section title="See Your Changes">
             <ReloadInstructions />
@@ -84,7 +84,7 @@ const App = () => {
             <DebugInstructions />
           </Section>
           <Section title="Learn More">
-            Read the docs to discover what to do next:
+            Read the docs to discover what to do next: test
           </Section>
           <LearnMoreLinks />
         </View>
@@ -95,11 +95,11 @@ const App = () => {
 
 const styles = StyleSheet.create({
   sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+    marginTop: 33,
+    paddingHorizontal: 23,
   },
   sectionTitle: {
-    fontSize: 24,
+    fontSize: 23,
     fontWeight: '600',
   },
   sectionDescription: {
