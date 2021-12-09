@@ -27,7 +27,7 @@ jobs:
               errorMessage += 'Prefix must be fix|modify|feature|breaking|release, '
             }
 
-            // Check label if base branch is staging
+            // Check label QAPassed
             console.log('head', context.payload.pull_request.head)
             console.log('base', context.payload.pull_request.base)
             const labels = context.payload.pull_request.labels
@@ -36,7 +36,7 @@ jobs:
               errorMessage += 'must have label QA passed, '
             }
 
-            // Check label if dev or release
+            // Check label dev or release
             const labelDev = labels.find((item) => item.name === 'dev')
             const labelRelease = labels.find((item) => item.name === 'release')
             if (
